@@ -1,5 +1,9 @@
 const Gameboard = (function () {
+    // gameboard array that will hold game data
     const gameArray = [];
+
+    let gameTie = false;
+    // fills in the gameArray to an empty 3x3 2D array
     for (let x = 0; x < 3; x++) {
         gameArray[x] = [];
         for (let y = 0; y < 3; y++) {
@@ -12,38 +16,58 @@ const Gameboard = (function () {
         if (gameArray[row][col] !== "") return;
         gameArray[row][col] = marker;
     };
+
+    // fetches the gameboard for the UI
     const getGameboard = () => gameArray;
     
-    return { getGameboard, placeMarker };
+    // checks all vertical, horizontal, and diagonal rows for a valid win
+    const checkWinCond = (player) => {
+        const conditions = [
+            [ [0, 0], [0, 1], [0, 2] ],
+            [ [1, 0], [1, 1], [1, 2] ],
+            [ [2, 0], [2, 1], [2, 2] ],
+            [ [0, 0], [1, 0], [2, 0] ],
+            [ [0, 1], [1, 1], [2, 1] ],
+            [ [0, 2], [1, 2], [2, 2] ],
+            [ [0, 0], [1, 1], [2, 2] ],
+            [ [2, 0], [1, 1], [0, 2] ],
+        ];
+        
+        for (let conditon of conditions) {
+            var isWon = true;
+            for (let indexs of conditon) {
+                if (gameArray[indexs[0]][indexs[1]] != player.getMarker()) {
+                    isWon = false;
+                    break;
+                }
+            }
+            if (isWon === true) {
+                player.setWinState(isWon);
+                break;
+            }
+        }
+    };
+
+    // checks the gameboard to see if there are any more valid cells left over
+    const checkTie = () => {
+        gameTie = gameArray.flat().filter(cell => cell === "").length > 0 ? true : false;
+    };
+
+    return { getGameboard, placeMarker, checkWinCond, checkTie};
 })();
 
 function Player(name, marker) {
+    var playerWon = false;
+
     const getName = () => name;
     const getMarker = () => marker;
+    const getWinState = () => playerWon;
 
-    return { getName, getMarker };
+    const setWinState = (state) => playerWon = state;
+
+    return { getName, getMarker, setWinState, getWinState };
 }
 
 const displayController = (function () {
 
 })();
-
-// Any CODE that needs to edit gameboard should be in the gameboard object and NOT in displayController object
-/*
-0 0 0
-0 0 0
-0 0 0
-
-Win conditions: 
-horizontal
-(00, 01, 02)
-(10, 11, 12)
-(20, 21, 22)
-verical
-(00, 10 20)
-(01, 11, 21)
-(02, 12, 22)
-diagonal
-(00, 11, 22)
-(20, 11 02)
-*/
