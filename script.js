@@ -2,14 +2,17 @@ const Gameboard = (function () {
     // gameboard array that will hold game data
     const gameArray = [];
 
-    let gameTie = false;
     // fills in the gameArray to an empty 3x3 2D array
-    for (let x = 0; x < 3; x++) {
-        gameArray[x] = [];
-        for (let y = 0; y < 3; y++) {
-            gameArray[x][y] = "";
+    const resetGameboard = () => {
+        for (let x = 0; x < 3; x++) {
+            gameArray[x] = [];
+            for (let y = 0; y < 3; y++) {
+                gameArray[x][y] = "";
+            }
         }
     }
+    // resets gameboard before game initalization
+    resetGameboard();
 
     // places player marker if the space is unoccupied by either player
     const placeMarker = (marker, row, col) => {
@@ -42,30 +45,27 @@ const Gameboard = (function () {
                 }
             }
             if (isWon === true) {
-                player.setWinState(isWon);
                 break;
             }
         }
+        return isWon;
     };
 
     // checks the gameboard to see if there are any more valid cells left over
     const checkTie = () => {
-        gameTie = gameArray.flat().filter(cell => cell === "").length > 0 ? true : false;
+        return gameArray.flat().filter(cell => cell === "").length > 0 ? false : true;
     };
 
-    return { getGameboard, placeMarker, checkWinCond, checkTie};
+    // Build functions for gameplay here but include ways for displayController to access
+
+    return { getGameboard, placeMarker, checkWinCond, checkTie, resetGameboard};
 })();
 
 function Player(name, marker) {
-    var playerWon = false;
-
     const getName = () => name;
     const getMarker = () => marker;
-    const getWinState = () => playerWon;
 
-    const setWinState = (state) => playerWon = state;
-
-    return { getName, getMarker, setWinState, getWinState };
+    return { getName, getMarker };
 }
 
 const displayController = (function () {
