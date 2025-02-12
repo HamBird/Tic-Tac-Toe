@@ -18,13 +18,34 @@ const Gameboard = (function () {
     const placeMarker = (marker, row, col) => {
         if (gameArray[row][col] !== "") return;
         gameArray[row][col] = marker;
-    };
+    }
 
     // fetches the gameboard for the UI
     const getGameboard = () => gameArray;
-    
+
+    return { getGameboard, placeMarker, resetGameboard};
+})();
+
+function Player(name, marker) {
+    const getName = () => name;
+    const getMarker = () => marker;
+
+    return { getName, getMarker };
+}
+
+const gameFlow = (function () {
+    // stores active players
+    let players = [];
+
+    let currentPlayer;
+    // allows for new players to be registered, cannot allow more than two players
+    const regNewPlayers = (name, marker) => {
+        if (players.length > 2) return;
+        players.push(Player(name, marker));
+    }
+
     // checks all vertical, horizontal, and diagonal rows for a valid win
-    const checkWinCond = (player) => {
+    const checkWinCond = (marker) => {
         const conditions = [
             [ [0, 0], [0, 1], [0, 2] ],
             [ [1, 0], [1, 1], [1, 2] ],
@@ -35,11 +56,12 @@ const Gameboard = (function () {
             [ [0, 0], [1, 1], [2, 2] ],
             [ [2, 0], [1, 1], [0, 2] ],
         ];
-        
+        const board = Gameboard.getGameboard();
+
         for (let conditon of conditions) {
             var isWon = true;
             for (let indexs of conditon) {
-                if (gameArray[indexs[0]][indexs[1]] != player.getMarker()) {
+                if (board[indexs[0]][indexs[1]] != marker) {
                     isWon = false;
                     break;
                 }
@@ -49,25 +71,50 @@ const Gameboard = (function () {
             }
         }
         return isWon;
-    };
+    }
 
     // checks the gameboard to see if there are any more valid cells left over
     const checkTie = () => {
-        return gameArray.flat().filter(cell => cell === "").length > 0 ? false : true;
-    };
+        const board = Gameboard.getGameboard();
+        return board.flat().filter(cell => cell === "").length > 0 ? false : true;
+    }
 
-    // Build functions for gameplay here but include ways for displayController to access
+    const startGame = () => {
+        if (players.length < 2) return;
+        currentPlayer = players[0];
+        newRound();
+    }
 
-    return { getGameboard, placeMarker, checkWinCond, checkTie, resetGameboard};
+    const newRound = () => {
+        console.log(Gameboard.getGameboard(), `${currentPlayer.getName()}'s Turn!`);
+    }
+
+    const playRound = (row, col) => {
+        // need to check valid placement
+        console.log(`Player ${currentPlayer.getName()} has placed a marker at row ${row}, col ${col}`);
+        Gameboard.placeMarker(currentPlayer.getMarker(), row, col);
+
+        if (checkWinCond(currentPlayer.getMarker())) {
+            console.log(`Player ${currentPlayer.getName()} has won!`);
+        }
+        else if (checkTie()) {
+            console.log(`Game Tied!`);
+        }
+
+        currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
+        newRound();
+    }
+
+    const newGame = (newPlayers) => {
+        Gameboard.resetGameboard();
+        if (newPlayers === True) {
+            players = [];
+        }
+    }
+
+    return { regNewPlayers, newGame, playRound, startGame };
 })();
 
-function Player(name, marker) {
-    const getName = () => name;
-    const getMarker = () => marker;
-
-    return { getName, getMarker };
-}
-
 const displayController = (function () {
-
+    
 })();
