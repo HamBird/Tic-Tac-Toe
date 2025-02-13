@@ -14,11 +14,11 @@ const Gameboard = (function () {
     // resets gameboard before game initalization
     resetGameboard();
 
-    gameArray = [
-        ["O", "O", "X"],
-        ["", "X", "O"],
-        ["X", "O", "X"]
-    ];
+    // gameArray = [
+    //     ["O", "O", "X"],
+    //     ["", "X", "O"],
+    //     ["X", "O", "X"]
+    // ];
     // places player marker if the space is unoccupied by either player
     const placeMarker = (marker, row, col) => {
         // if the spot is already occupied, return false indicate invalid play
@@ -43,7 +43,11 @@ function Player(name, marker) {
 
 const gameFlow = (function () {
     // stores active players
-    let players = [];
+    let players = [
+        // preset players to test UI
+        Player("Joe", "X"),
+        Player("Bill", "O"),
+    ];
 
     let currentPlayer;
     // allows for new players to be registered, cannot allow more than two players
@@ -87,16 +91,18 @@ const gameFlow = (function () {
         return board.flat().filter(cell => cell === "").length > 0 ? false : true;
     }
 
+    const newRound = () => {
+        console.log(Gameboard.getGameboard(), `${currentPlayer.getName()}'s Turn!`);
+    }
+
     const startGame = () => {
         if (players.length < 2) return;
         currentPlayer = players[0];
         newRound();
     }
 
-    const newRound = () => {
-        console.log(Gameboard.getGameboard(), `${currentPlayer.getName()}'s Turn!`);
-    }
-
+    // used to debug UI
+    startGame();
     const playRound = (row, col) => {
         // need to check valid placement
         if (Gameboard.placeMarker(currentPlayer.getMarker(), row, col)) {
@@ -108,9 +114,11 @@ const gameFlow = (function () {
             else if (checkTie()) {
                 console.log(`Game Tied!`);
             }
-
-            currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
-            newRound();
+            else {
+                currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
+                newRound();
+            }
+            displayController.displayBoard();
         }
     }
 
@@ -121,22 +129,35 @@ const gameFlow = (function () {
         }
     }
 
+    // Should add a boolean to check if game has ended in anyway to halt the game from progressing anymore
     return { regNewPlayers, newGame, playRound, startGame };
 })();
 
 const displayController = (function () {
-    displayBoard = () => {
+    const displayBoard = () => {
         const board = Gameboard.getGameboard();
 
         var cells = "";
         for (let row = 0; row < board.length; row++) {
             for (let col = 0; col < board[row].length; col++) {
-                cells += `<div class="cells" data-rows="${row}" data-col="${col}">${board[row][col]}</div>`;
+                cells += `<div class="cells" data-row="${row}" data-col="${col}">${board[row][col]}</div>`;
             }
         }
 
         document.querySelector(".board").innerHTML = cells;
+        setCellEvent();
     }
+
+    const setCellEvent = () => {
+        document.querySelectorAll(".cells").forEach(cell => {
+            cell.addEventListener("click", () => {
+                console.log(cell);
+                gameFlow.playRound(cell.dataset.row, cell.dataset.col);
+            });
+        });
+    }
+
+    displayBoard();
 
     return { displayBoard };
 })();
