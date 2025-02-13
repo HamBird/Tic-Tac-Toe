@@ -1,3 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 body {
     background-color: rgb(58, 58, 58);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+
+    /* Sets the whole body to Roboto-Serif */
+    font-family: "Roboto", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:
+      "wdth" 100;
+}
+header{
+    text-align: center;
+    color: white;
+    font-size: 35px;
+    background-color: rgb(255, 178, 78);
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.board {
+    align-self: center;
+    margin-top: 20px;
+    display: grid;
+    grid-template: repeat(3, 80px) / repeat(3, 80px);
+    background-color: white;
+}
+.cells {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    align-self: center;
+    padding: auto;
 }

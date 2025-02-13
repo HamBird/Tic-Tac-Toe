@@ -1,6 +1,6 @@
 const Gameboard = (function () {
     // gameboard array that will hold game data
-    const gameArray = [];
+    var gameArray = [];
 
     // fills in the gameArray to an empty 3x3 2D array
     const resetGameboard = () => {
@@ -14,10 +14,18 @@ const Gameboard = (function () {
     // resets gameboard before game initalization
     resetGameboard();
 
+    gameArray = [
+        ["O", "O", "X"],
+        ["", "X", "O"],
+        ["X", "O", "X"]
+    ];
     // places player marker if the space is unoccupied by either player
     const placeMarker = (marker, row, col) => {
-        if (gameArray[row][col] !== "") return;
+        // if the spot is already occupied, return false indicate invalid play
+        if (gameArray[row][col] !== "") return false;
         gameArray[row][col] = marker;
+        // returns true to indicate valid play
+        return true;
     }
 
     // fetches the gameboard for the UI
@@ -91,18 +99,19 @@ const gameFlow = (function () {
 
     const playRound = (row, col) => {
         // need to check valid placement
-        console.log(`Player ${currentPlayer.getName()} has placed a marker at row ${row}, col ${col}`);
-        Gameboard.placeMarker(currentPlayer.getMarker(), row, col);
+        if (Gameboard.placeMarker(currentPlayer.getMarker(), row, col)) {
+            console.log(`Player ${currentPlayer.getName()} has placed a marker at row ${row}, col ${col}`);
 
-        if (checkWinCond(currentPlayer.getMarker())) {
-            console.log(`Player ${currentPlayer.getName()} has won!`);
-        }
-        else if (checkTie()) {
-            console.log(`Game Tied!`);
-        }
+            if (checkWinCond(currentPlayer.getMarker())) {
+                console.log(`Player ${currentPlayer.getName()} has won!`);
+            }
+            else if (checkTie()) {
+                console.log(`Game Tied!`);
+            }
 
-        currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
-        newRound();
+            currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
+            newRound();
+        }
     }
 
     const newGame = (newPlayers) => {
@@ -116,5 +125,18 @@ const gameFlow = (function () {
 })();
 
 const displayController = (function () {
-    
+    displayBoard = () => {
+        const board = Gameboard.getGameboard();
+
+        var cells = "";
+        for (let row = 0; row < board.length; row++) {
+            for (let col = 0; col < board[row].length; col++) {
+                cells += `<div class="cells" data-rows="${row}" data-col="${col}">${board[row][col]}</div>`;
+            }
+        }
+
+        document.querySelector(".board").innerHTML = cells;
+    }
+
+    return { displayBoard };
 })();
