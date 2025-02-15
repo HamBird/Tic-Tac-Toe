@@ -8,8 +8,21 @@
 </head>
 <body>
     <header>Tic-Tac-Toe</header>
-    <div class="board">
-        
+    <dialog id="player-dialog">
+        <form method="post">
+            <input type="button" value="Close" onclick="closeDialog()">
+        </form>
+    </dialog>
+    <div class="menu">
+        <input type="button" value="Start/Restart" onclick="gameFlow.startGame()">
+        <input type="button" value="New Players" onclick="openDialog()">
+    </div>
+    <div class="display">
+        <h2>This is where the display for game turns will be!</h2>
+    </div>
+    <div class="board"></div>
+    <div class="scoreboard">
+        This will be for the scores for each player!
     </div>
     <script src="script.js" defer></script>
 </body>

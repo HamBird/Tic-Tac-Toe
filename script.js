@@ -14,11 +14,6 @@ const Gameboard = (function () {
     // resets gameboard before game initalization
     resetGameboard();
 
-    // gameArray = [
-    //     ["O", "O", "X"],
-    //     ["", "X", "O"],
-    //     ["X", "O", "X"]
-    // ];
     // places player marker if the space is unoccupied by either player
     const placeMarker = (marker, row, col) => {
         // if the spot is already occupied, return false indicate invalid play
@@ -40,6 +35,38 @@ function Player(name, marker) {
 
     return { getName, getMarker };
 }
+
+const displayController = (function () {
+    const displayBoard = () => {
+        const board = Gameboard.getGameboard();
+
+        var cells = "";
+        for (let row = 0; row < board.length; row++) {
+            for (let col = 0; col < board[row].length; col++) {
+                cells += `<div class="cells" data-row="${row}" data-col="${col}">${board[row][col]}</div>`;
+            }
+        }
+
+        document.querySelector(".board").innerHTML = cells;
+        setCellEvent();
+    }
+
+    const setCellEvent = () => {
+        document.querySelectorAll(".cells").forEach(cell => {
+            cell.addEventListener("click", () => {
+                gameFlow.playRound(cell.dataset.row, cell.dataset.col);
+            });
+        });
+    }
+
+    const displayStatus = (status) => {
+        document.querySelector(".display>h2").innerHTML = status;
+    }
+
+    displayBoard();
+
+    return { displayBoard, displayStatus };
+})();
 
 const gameFlow = (function () {
     // stores active players
@@ -84,7 +111,7 @@ const gameFlow = (function () {
         }
         return isWon;
     }
-
+    var isGameOver = false;
     // checks the gameboard to see if there are any more valid cells left over
     const checkTie = () => {
         const board = Gameboard.getGameboard();
@@ -93,10 +120,11 @@ const gameFlow = (function () {
 
     const newRound = () => {
         console.log(Gameboard.getGameboard(), `${currentPlayer.getName()}'s Turn!`);
+        displayController.displayStatus(`${currentPlayer.getName()}'s Turn!`);
     }
 
     const startGame = () => {
-        if (players.length < 2) return;
+        if (players.length < 2 && !isGameOver) return;
         currentPlayer = players[0];
         newRound();
     }
@@ -105,14 +133,18 @@ const gameFlow = (function () {
     startGame();
     const playRound = (row, col) => {
         // need to check valid placement
-        if (Gameboard.placeMarker(currentPlayer.getMarker(), row, col)) {
+        if (Gameboard.placeMarker(currentPlayer.getMarker(), row, col) && !isGameOver) {
             console.log(`Player ${currentPlayer.getName()} has placed a marker at row ${row}, col ${col}`);
 
             if (checkWinCond(currentPlayer.getMarker())) {
                 console.log(`Player ${currentPlayer.getName()} has won!`);
+                displayController.displayStatus(`Player ${currentPlayer.getName()} has won!`);
+                isGameOver = true;
             }
             else if (checkTie()) {
                 console.log(`Game Tied!`);
+                displayController.displayStatus(`Game Tied!`);
+                isGameOver = true;
             }
             else {
                 currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
@@ -124,7 +156,10 @@ const gameFlow = (function () {
 
     const newGame = (newPlayers) => {
         Gameboard.resetGameboard();
-        if (newPlayers === True) {
+        displayController.displayBoard();
+        displayController.displayStatus("Start game when ready!");
+        isGameOver = false;
+        if (newPlayers === true) {
             players = [];
         }
     }
@@ -133,31 +168,13 @@ const gameFlow = (function () {
     return { regNewPlayers, newGame, playRound, startGame };
 })();
 
-const displayController = (function () {
-    const displayBoard = () => {
-        const board = Gameboard.getGameboard();
 
-        var cells = "";
-        for (let row = 0; row < board.length; row++) {
-            for (let col = 0; col < board[row].length; col++) {
-                cells += `<div class="cells" data-row="${row}" data-col="${col}">${board[row][col]}</div>`;
-            }
-        }
-
-        document.querySelector(".board").innerHTML = cells;
-        setCellEvent();
-    }
-
-    const setCellEvent = () => {
-        document.querySelectorAll(".cells").forEach(cell => {
-            cell.addEventListener("click", () => {
-                console.log(cell);
-                gameFlow.playRound(cell.dataset.row, cell.dataset.col);
-            });
-        });
-    }
-
-    displayBoard();
-
-    return { displayBoard };
-})();
+let dialog = document.getElementById("player-dialog");
+// opens the dialog
+function openDialog() {
+    dialog.showModal();
+}
+// clears the data in the dialog and closes after
+function closeDialog() {
+    dialog.close();
+}

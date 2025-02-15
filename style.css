@@ -5,7 +5,7 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
-
+    
     /* Sets the whole body to Roboto-Serif */
     font-family: "Roboto", serif;
     font-optical-sizing: auto;
@@ -18,21 +18,62 @@ header{
     text-align: center;
     color: white;
     font-size: 35px;
-    background-color: rgb(255, 178, 78);
+    background-color: rgb(199, 114, 3);
     padding-top: 10px;
     padding-bottom: 10px;
 }
 .board {
     align-self: center;
-    margin-top: 20px;
+    margin-top: 4rem;
     display: grid;
-    grid-template: repeat(3, 80px) / repeat(3, 80px);
+    grid-template: repeat(3, 130px) / repeat(3, 130px);
     background-color: white;
 }
 .cells {
-    text-align: center;
-    font-size: 3rem;
+    font-size: 6rem;
     font-weight: bold;
-    align-self: center;
     height: 100%;
+    border: 1px solid gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.menu, .display {
+    align-self: center;
+}
+.menu {
+    margin-top: 40px;
+    margin-bottom: 30px;
+    display: flex;
+    width: 350px;
+    justify-content: space-between;
+}
+.menu > input {
+    height: 50px;
+    font-size: 20px;
+    color: white;
+    background-color: rgb(199, 114, 3);
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 25px;
+    cursor: pointer;
+}
+.scoreboard {
+    margin-top: 50px;
+    align-self: center;
+    color: white;
+}
+dialog {
+    width: 370px;
+    height: 150px;
+    margin-top: 10%;
+    border-radius: 10px;
+}
+dialog::backdrop{
+    background-color: rgba(0, 0, 0, 0.7);
+}
+.display {
+    color: white;
+    border: 5px solid rgb(199, 114, 3);
+    border-style: none none solid none;
 }
