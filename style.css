@@ -58,6 +58,11 @@ header{
     border-radius: 25px;
     cursor: pointer;
 }
+.restart:disabled {
+    background-color: rgb(164, 95, 4);
+    color: rgb(207, 207, 207);
+    cursor:auto;
+}
 .scoreboard {
     margin-top: 50px;
     align-self: center;
@@ -68,6 +73,13 @@ dialog {
     height: 150px;
     margin-top: 10%;
     border-radius: 10px;
+    border: 5px solid rgb(199, 114, 3);
+}
+dialog > form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(4, 1fr);
+    height: 100%;
 }
 dialog::backdrop{
     background-color: rgba(0, 0, 0, 0.7);

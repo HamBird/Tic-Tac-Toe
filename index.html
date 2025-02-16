@@ -10,11 +10,11 @@
     <header>Tic-Tac-Toe</header>
     <dialog id="player-dialog">
         <form method="post">
-            <input type="button" value="Close" onclick="closeDialog()">
+            <input type="button" value="Close" onclick="closeDialog()" class="close-btn">
         </form>
     </dialog>
     <div class="menu">
-        <input type="button" value="Start/Restart" onclick="gameFlow.startGame()">
+        <input type="button" value="Start/Restart" onclick="gameFlow.startGame()" class="restart">
         <input type="button" value="New Players" onclick="openDialog()">
     </div>
     <div class="display">
