@@ -119,7 +119,7 @@ const gameFlow = (function () {
         return isWon;
     }
 
-    // var isGameOver = false;
+    var isGameOver = true;
 
     // checks the gameboard to see if there are any more valid cells left over
     const checkTie = () => {
@@ -142,7 +142,7 @@ const gameFlow = (function () {
     // startGame();
     const playRound = (row, col) => {
         // need to check valid placement
-        if (Gameboard.placeMarker(currentPlayer.getMarker(), row, col) && !isGameOver) {
+        if (!isGameOver && Gameboard.placeMarker(currentPlayer.getMarker(), row, col)) {
             console.log(`Player ${currentPlayer.getName()} has placed a marker at row ${row}, col ${col}`);
 
             if (checkWinCond(currentPlayer.getMarker())) {
