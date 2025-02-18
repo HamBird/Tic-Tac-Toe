@@ -137,16 +137,18 @@ const gameFlow = (function () {
         return board.flat().filter(cell => cell === "").length > 0 ? false : true;
     }
 
+    // creates a new round
     const newRound = () => {
         console.log(Gameboard.getGameboard(), `${currentPlayer.getName()}'s Turn!`);
         displayController.displayStatus(`${currentPlayer.getName()}'s Turn!`);
     }
 
     const playRound = (row, col) => {
-        // need to check valid placement
+        // Checks if the move is valid
         if (!isGameOver && Gameboard.placeMarker(currentPlayer.getMarker(), row, col)) {
             console.log(`Player ${currentPlayer.getName()} has placed a marker at row ${row}, col ${col}`);
 
+            // Checks for a win, tie, else game continues and updates display
             if (checkWinCond(currentPlayer.getMarker())) {
                 console.log(`Player ${currentPlayer.getName()} has won!`);
                 displayController.displayStatus(`Player ${currentPlayer.getName()} has won!`);
@@ -193,6 +195,9 @@ function closeDialog() {
     dialog.close();
 }
 
+// not inside an object due to event.preventDefault()
+// Checks if player names are set and are not the same, then removes existing players and adds the names below
+// creates the scoreboard, enables the start buttons and closes dialog.
 document.querySelector(".submit-btn").addEventListener("click", (event) => {
     event.preventDefault()
 
