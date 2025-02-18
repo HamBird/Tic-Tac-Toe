@@ -69,26 +69,36 @@ const displayController = (function () {
         document.querySelector(".display>h2").innerHTML = status;
     }
 
+    const createScoreBoard = (players) => {
+        var scoreboard = "";
+        scoreboard += `<p id="player-${players[0].getName()}">${players[0].getName()}</p>`;
+        scoreboard += `<p id="player-${players[1].getName()}">${players[1].getName()}</p>`;
+        scoreboard += `<div><p id="${players[0].getName()}-wins">${players[0].getWins()}</p></div>`;
+        scoreboard += `<div><p id="${players[1].getName()}-wins">${players[1].getWins()}</p></div>`;
+
+        document.querySelector(".scores").innerHTML = scoreboard;
+    }
+
+    const updateScoreBoard = (player) => {
+        document.getElementById(`${player.getName()}-wins`).innerHTML = player.getWins();
+    }
+
     displayBoard();
 
-    return { displayBoard, displayStatus };
+    return { displayBoard, displayStatus, createScoreBoard, updateScoreBoard };
 })();
 
 const gameFlow = (function () {
     // stores active players
     var players = [];
-    // let players = [
-    //     // preset players to test UI
-    //     Player("Joe", "X"),
-    //     Player("Bill", "O"),
-    // ];
-
     let currentPlayer;
-    // allows for new players to be registered, cannot allow more than two players
-    const regNewPlayers = (name, marker) => {
-        if (players.length > 2) return;
-        players.push(Player(name, marker));
+
+    const regPlayers = (playerArray) => {
+        playerArray.forEach(player => players.push(player));
     }
+
+    // clears existing players
+    const removePlayers = () => players = [];
 
     // checks all vertical, horizontal, and diagonal rows for a valid win
     const checkWinCond = (marker) => {
@@ -132,14 +142,6 @@ const gameFlow = (function () {
         displayController.displayStatus(`${currentPlayer.getName()}'s Turn!`);
     }
 
-    // const startGame = () => {
-    //     if (players.length < 2 && !isGameOver) return;
-    //     currentPlayer = players[0];
-    //     newRound();
-    // }
-
-    // // used to debug UI
-    // startGame();
     const playRound = (row, col) => {
         // need to check valid placement
         if (!isGameOver && Gameboard.placeMarker(currentPlayer.getMarker(), row, col)) {
@@ -149,6 +151,7 @@ const gameFlow = (function () {
                 console.log(`Player ${currentPlayer.getName()} has won!`);
                 displayController.displayStatus(`Player ${currentPlayer.getName()} has won!`);
                 currentPlayer.incrementWin();
+                displayController.updateScoreBoard(currentPlayer);
                 isGameOver = true;
             }
             else if (checkTie()) {
@@ -172,27 +175,9 @@ const gameFlow = (function () {
         newRound();
         isGameOver = false;
     }
-    // const newGame = (newPlayers) => {
-    //     Gameboard.resetGameboard();
-    //     displayController.displayBoard();
-    //     displayController.displayStatus("Start game when ready!");
-    //     isGameOver = false;
-    //     if (newPlayers === true) {
-    //         players = [];
-    //     }
-    // }
-
-    // Should remove the fact of using newGame() and startGame() and just combine them for the restart button combination and
-    //  inside newplayers dialog, if the user inserts two names and hits "submit" remove existing players and make new players
-    //   or if the user closes the dialog, keep the existing players.
-
-    // Also for the players object, include a property to increment wins so that there may be a scoreboard for wins on the HTML
-
-    // Also for the "Start/Restart" button, disable the button and stlye using :disabled, so that onload the button cannot be pressed
-    //  until there are two valid players
 
     // return { regNewPlayers, playRound, startGame, newGame};
-    return { regNewPlayers, playRound, newGame };
+    return {  removePlayers, regPlayers, playRound, newGame };
 })();
 
 
@@ -203,5 +188,25 @@ function openDialog() {
 }
 // clears the data in the dialog and closes after
 function closeDialog() {
+    document.getElementById("player1").value = "";
+    document.getElementById("player2").value = "";
     dialog.close();
 }
+
+document.querySelector(".submit-btn").addEventListener("click", (event) => {
+    event.preventDefault()
+
+    let player1Name = document.getElementById("player1").value;
+    let player2Name = document.getElementById("player2").value;
+    if (player1Name.length < 1 || player2Name.length < 1 || player1Name === player2Name) {
+        alert("Player names MUST include atleast 1 character and cannot be similar.")
+        return;
+    }
+
+    gameFlow.removePlayers();
+    let players = [Player(player1Name, "X"), Player(player2Name, "O")];
+    gameFlow.regPlayers(players);
+    displayController.createScoreBoard(players);
+    document.querySelector(".restart").removeAttribute("disabled");
+    closeDialog();
+})

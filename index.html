@@ -13,14 +13,14 @@
             <h2>Enter Your Names!</h2>
             <p>Player 1</p>
             <p>Player 2</p>
-            <input type="text" name="player1-name" id="player1">
-            <input type="text" name="player2-name" id="player2">
+            <input type="text" name="player1-name" id="player1" spellcheck="false">
+            <input type="text" name="player2-name" id="player2" spellcheck="false">
             <input type="button" value="Close" onclick="closeDialog()" class="close-btn">
             <input type="submit" value="Add Players" class="submit-btn">
         </form>
     </dialog>
     <div class="menu">
-        <input type="button" value="Start/Restart" onclick="gameFlow.startGame()" class="restart">
+        <input type="button" value="Start/Restart" onclick="gameFlow.newGame()" class="restart">
         <input type="button" value="New Players" onclick="openDialog()">
     </div>
     <div class="display">
@@ -28,7 +28,13 @@
     </div>
     <div class="board"></div>
     <div class="scoreboard">
-        This will be for the scores for each player!
+        <p>Wins</p>
+        <div class="scores">
+            <p id="player1-name">Bob</p>
+            <p id="player2-name">John</p>
+            <div><p id="player1-wins">3</p></div>
+            <div><p id="player2-wins">4</p></div>
+        </div>
     </div>
     <script src="script.js" defer></script>
 </body>

@@ -108,6 +108,7 @@ dialog {
     padding-right: 10px;
     outline: none;
     align-self: center;
+    text-decoration: none;
 }
 dialog > form {
     display: grid;
@@ -134,4 +135,40 @@ dialog::backdrop{
     color: white;
     border: 5px solid rgb(199, 114, 3);
     border-style: none none solid none;
+}
+.scoreboard {
+    width: 300px;
+}
+.scoreboard > p {
+    padding-bottom: 15px;
+    border: none;
+    border-style: none;
+    font-size: 25px;
+    text-align: center;
+    margin: 0;
+}
+.scoreboard > div > p {
+    font-size: 25px;
+    text-align: center;
+    margin: 0;
+    border: 6px solid rgb(199, 114, 3);
+    border-style: none none solid none;
+}
+.scores {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    width: 100%;
+}
+.scores > div {
+    grid-row: 2/4;
+    align-items: center;
+    justify-items: center;
+    font-size: 30px;
+    border: 3px solid rgb(199, 114, 3);
+    border-style: none solid none none;
+}
+.scores > div + div {
+    border: 3px solid rgb(199, 114, 3);
+    border-style: none none none solid;
 }
