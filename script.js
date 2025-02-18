@@ -129,8 +129,6 @@ const gameFlow = (function () {
         return isWon;
     }
 
-    var isGameOver = true;
-
     // checks the gameboard to see if there are any more valid cells left over
     const checkTie = () => {
         const board = Gameboard.getGameboard();
